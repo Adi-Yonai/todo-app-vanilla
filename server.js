@@ -5,7 +5,7 @@ const todoService = require('./services/todo.service')
 app.use(express.static('public'))
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.redirect('/index.html')
 })
 
 app.get('/api/todo', (req, res) => {
