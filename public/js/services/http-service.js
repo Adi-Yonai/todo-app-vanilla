@@ -1,7 +1,7 @@
 
 const ROUTE = "http://localhost:3000/"
 
-function sendReq(method, dir) {
+function sendReq(method, dir, body) {
     return new Promise((resolve, reject) => {
         var httpRequest = new XMLHttpRequest();
         httpRequest.onload = function() {
@@ -16,6 +16,7 @@ function sendReq(method, dir) {
             };
         }
         httpRequest.open(method,ROUTE+dir);
-        httpRequest.send();
+        if (body) httpRequest.setRequestHeader('Content-Type', 'application/json');
+        httpRequest.send(body);
     })
 }

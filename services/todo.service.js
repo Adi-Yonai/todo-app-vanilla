@@ -19,33 +19,20 @@ function remove(todoId) {
     return Promise.resolve()
 }
 
-function create(title,txt, prio) {
-    const todo = {
-        _id: _makeId(),
-        title,
-        txt,
-        isDone: false,
-        createdAt: Date.now,
-        prio 
-    };
+function create(todo) {
+    todo._id = _makeId()
+    todo.createdAt = Date.now
+    todo.isDone = false
     gTodos.push(todo)
     _saveTodosToFile()
     return Promise.resolve(todo)
 }
 
-function update(title,txt, prio, _id, time, isDone) {
-    const todo = {
-        _id,
-        title,
-        txt,
-        isDone,
-        createdAt: time,
-        prio 
-    };
-    const idx = gTodos.findIndex(todo => todo._id === todoId)
-    gTodos[idx] = todo
+function update(todoToUpdate) {
+    const idx = gTodos.findIndex(todo => todo._id === todoToUpdate._id)
+    gTodos[idx] = todoToUpdate
     _saveTodosToFile()
-    return Promise.resolve(todo)
+    return Promise.resolve(todoToUpdate)
 }
 
 

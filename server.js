@@ -1,31 +1,52 @@
 const express = require('express')
+const cookieParser = require('cookie-parser')
+const bodyParser = require('body-parser')
+const session = require('express-session')
 const app = express()
 const port = 3000
 const todoService = require('./services/todo.service')
 app.use(express.static('public'))
+app.use(cookieParser())
+app.use(bodyParser.json())
+
+app.use(session({
+    secret: 'some secret token',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {secure: false}
+}))
 
 app.get('/', (req, res) => {
   res.redirect('/index.html')
 })
 
 app.get('/api/todo', (req, res) => {
-    console.log(`Backend getting your Todos`)
+    var visitCount = req.cookies.visitCount || 0
+    visitCount++
+    res.cookie('visitCount', visitCount, {maxAge: 60*60*1000})
     todoService.query()
-        .then(todos => {
+    .then(todos => {
             res.send(todos)
         })
 })
 
-app.get('/api/todo/save', (req, res) => {
+
+
+app.post('/api/todo/', (req, res) => {
     console.log('Backend saving your Todo')
-    todoService.create(req.query.title, req.query.txt, req.query.prio)
-        .then(() => res.send({msg: "Task added successfully"}))
+    const todo = req.body
+    todoService.create(todo)
+        .then((savedTodo) => {
+            res.send(savedTodo)
+        })
 })
 
-app.get('/api/todo/update', (req, res) => {
-    todoService.update(req.query.title, req.query.txt, req.query.prio, req.query._id, req.query.time, req.query.isDone)
-        .then(() => {
-            res.send({msg: 'Task updated successfully'})
+app.put('/api/todo/:todoId', (req, res) => {
+    console.log('Backend updating your Todo')
+    const todo = req.body
+    todoService.update(todo)
+        .then((savedTodo) => {
+            res.send(savedTodo)
         })
 })
 
@@ -37,11 +58,9 @@ app.get('/api/todo/:todoId', (req, res) => {
         })
 })
 
-app.get('/api/todo/:todoId/remove', (req, res) => {
+app.delete('/api/todo/:todoId/', (req, res) => {
     todoService.remove(req.params.todoId)
-        .then(() => {
-            res.send({msg: 'Task removed successfully'})
-        })
+        .then(res.send({msg: 'Task removed successfully'}))
 })
 
 app.listen(port, () => {

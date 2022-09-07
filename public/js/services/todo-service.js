@@ -4,14 +4,6 @@ var gTodos
 var gFilterBy = 'ALL'
 var gIsAddBox = false
 
-function _createTodos() {
-    const todos = [
-        _createTodo('do1', 'do this'),
-        _createTodo('do2', 'do that'),
-        _createTodo('do3', 'do this again')
-    ];
-    return todos;
-}
 
 function getTodosForDisplay() {
     if (gFilterBy === 'ALL') 
@@ -23,24 +15,31 @@ function getTodosForDisplay() {
 }
 
 function removeTodo(todoId) {
-    const idx = gTodos.findIndex(todo => todo._id === todoId);
-    gTodos.splice(idx, 1);
-    sendReq("GET",`api/todo/${todoId}/remove`)
-        .then(res => {console.log(JSON.parse(res).msg)})
-    _saveTodosToStorage();
+    sendReq("DELETE",`api/todo/${todoId}`)
+        .then(res => {
+        console.log(JSON.parse(res).msg)
+        const idx = gTodos.findIndex(todo => todo._id === todoId);
+        gTodos.splice(idx, 1);
+        renderTodos();
+        })
 }
 
 function toggleTodo(todoId) {
     const todo = gTodos.find(todo => todo._id === todoId);
     todo.isDone = !todo.isDone;
-    _saveTodosToStorage();
 }
 
 function addTodo(title, txt,prio) {
-    gTodos.unshift(_createTodo(title, txt, prio));
-    sendReq("GET",`api/todo/save?title=${title}&txt=${txt}&prio=${prio}`)
-        .then(res => {console.log(JSON.parse(res).msg)})
-    _saveTodosToStorage();
+    const todo = {
+        title,
+        txt,
+        prio
+    }
+    sendReq("POST",'api/todo/', JSON.stringify(todo))
+        .then(res => {console.log(JSON.parse(res))
+        gTodos.unshift(JSON.parse(res));
+        renderTodos();
+    })
 }
 
 function updateTodo(title, txt,prio, _id, time, isDone) {
