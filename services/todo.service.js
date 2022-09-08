@@ -9,6 +9,7 @@ function query() {
 
 function getById(todoId) {
     const todo = gTodos.find(todo => todo._id === todoId)
+    if (!todo) return Promise.reject('Todo not found')
     return Promise.resolve(todo)
 }
 
@@ -30,6 +31,7 @@ function create(todo) {
 
 function update(todoToUpdate) {
     const idx = gTodos.findIndex(todo => todo._id === todoToUpdate._id)
+    if (idx===-1) return Promise.reject(' Todo not found')
     gTodos[idx] = todoToUpdate
     _saveTodosToFile()
     return Promise.resolve(todoToUpdate)
