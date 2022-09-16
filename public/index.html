@@ -8,6 +8,13 @@
     <title>Todos MVC</title>
 </head>
 <body onload="onInit()">
+    <header>
+        <img src="" class="logo">
+        <section class="user-panel">
+            <button class="login-box-button" onclick="openLoginBox()">Log in/ Sign up</button>
+            <div class="user-options hidden"></div>
+        </section>
+    </header>
     <h1>Todos MVC</h1>
     <section class="todo-filter">
         <h4>Filters Todos</h4>
@@ -38,13 +45,23 @@
             Total Todos: <all></all> Active: <active></active>
         </h2>
     </section>
-    <section class="modal" onclick="closeModal()">
-        <section class="detail-box">
+    <section class="detail-modal modal" onclick="closeDet()">
+        <section class="detail-box box">
+            <div class="details"></div>
+            <button onclick="openUpdate()">Update</button>
         </section>
     </section>
-    <script src="js/services/todo-service.js"></script>
+    <section class="login-modal modal" onclick="closeLogin()">
+        <section class="login-box box">
+            <input type="text" name="username" placeholder="Username">
+            <input type="password" name="password" placeholder="Password">
+            <button class="login-button" onclick="onLogin()">Login</button>
+        </section>
+    </section>
     <script src="js/todo-controller.js"></script>
+    <script src="js/services/todo-service.js"></script>
     <script src="js/services/storage-service.js"></script>
     <script src="js/services/http-service.js"></script>
+    <script src="js/services/user-service.js"></script>
 </body>
 </html>

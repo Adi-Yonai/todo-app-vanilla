@@ -35,13 +35,13 @@ background-color: green;
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
-.detail-box {
+.box {
     background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
-  padding: 20px;
-  border: 1px solid #888;
-  border-radius: 10px;
-  width: 80%; /* Could be more or less, depending on screen size */
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 10px;
+    width: 80%; /* Could be more or less, depending on screen size */
 }
 
 .add-box {
@@ -52,4 +52,19 @@ background-color: green;
 
 .hidden {
     display: none;
+}
+
+header {
+    position: fixed;
+    background-color: black;
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */;
+    display: flex;
+    flex-direction: row;
+}
+
+.user-options {
+    background-color: #fff;
 }

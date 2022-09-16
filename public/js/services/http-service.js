@@ -6,10 +6,10 @@ function sendReq(method, dir, body) {
         var httpRequest = new XMLHttpRequest();
         httpRequest.onload = function() {
             if (httpRequest.status === 200) {
-                resolve(httpRequest.responseText);
+                resolve(httpRequest.response);
             }
             else {
-                reject(Error("Data didn't load successfully, error code:"+ httpRequest.statusText));
+                reject(Error("Data didn't load successfully, error code: "+ httpRequest.status + ", reason: " + httpRequest.responseText));
             }
             httpRequest.onerror = function () {
                 reject(Error("Network error"))

@@ -1,42 +1,54 @@
 
-const gTodos = require('../data/todo.json')
 const Fs = require('fs')
-const { time } = require('console')
+const gTodos = require('../data/todo.json')
 
-function query() {
-    return Promise.resolve(gTodos)
+
+function query(loggedinUser) {
+    const todos = gTodos.filter(todo => {return todo.owner._id === loggedinUser._id})
+    return Promise.resolve(todos)
 }
 
-function getById(todoId) {
+function getById(todoId, loggedinUser) {
     const todo = gTodos.find(todo => todo._id === todoId)
     if (!todo) return Promise.reject('Todo not found')
+    if (todo.owner._id !== loggedinUser._id) return Promise.reject('Not your todo')
     return Promise.resolve(todo)
 }
 
-function remove(todoId) {
+function remove(todoId, loggedinUser) {
     const idx = gTodos.findIndex(todo => todo._id === todoId)
+    if (idx === -1) return Promise.reject('Car not found')
+    if (!loggedinUser.isAdmin && gTodos[idx].owner._id !== loggedinUser._id) return Promise.reject('Not your todo')
     gTodos.splice(idx, 1)
-    _saveTodosToFile()
-    return Promise.resolve()
+    return _saveTodosToFile()
 }
 
-function create(todo) {
-    todo._id = _makeId()
-    todo.createdAt = Date.now
-    todo.isDone = false
-    gTodos.push(todo)
-    _saveTodosToFile()
-    return Promise.resolve(todo)
-}
+function save({_id, title, txt, prio, isDone, createdAt, owner}, loggedinUser) {
+    const todoToSave = {
+        _id,
+        title,
+        txt,
+        prio,
+        isDone,
+        createdAt,
+        owner
+    }
 
-function update(todoToUpdate) {
-    const idx = gTodos.findIndex(todo => todo._id === todoToUpdate._id)
-    if (idx===-1) return Promise.reject(' Todo not found')
-    gTodos[idx] = todoToUpdate
-    _saveTodosToFile()
-    return Promise.resolve(todoToUpdate)
+    if (_id) {
+        // UPDATE
+        const idx = gTodos.findIndex(todo => todo._id === todoToUpdate._id)
+        if (idx===-1) return Promise.reject(' Todo not found')
+        if (!loggedinUser.isAdmin && gTodos[idx].owner._id !== loggedinUser._id) return Promise.reject('Not your todo')
+        gTodos[idx] = todoToSave
+    } else {    
+        // CREATE
+        todoToSave._id = _makeId()
+        todoToSave.isDone = false
+        todoToSave.createdAt = Date.now
+        gTodos.unshift(todoToSave)
+    }
+    return _saveTodosToFile().then(() => {return todoToSave})
 }
-
 
 function _saveTodosToFile() {
     return new Promise((resolve, reject) => {
@@ -61,6 +73,5 @@ module.exports = {
     query,
     getById,
     remove,
-    create,
-    update
+    save
 }

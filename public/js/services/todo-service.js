@@ -36,9 +36,10 @@ function addTodo(title, txt,prio) {
         prio
     }
     sendReq("POST",'api/todo/', JSON.stringify(todo))
-        .then(res => {console.log(JSON.parse(res))
-        gTodos.unshift(JSON.parse(res));
-        renderTodos();
+        .then(res => {
+            console.log(JSON.parse(res))
+            gTodos.unshift(JSON.parse(res));
+            renderTodos();
     })
 }
 
@@ -94,15 +95,7 @@ function _loadTodosFromStorage() {
 }
 
 function loadTodos() {
-        sendReq("GET","api/todo")
-        .then( res => {
-            gTodos = JSON.parse(res);
-            console.log(res);
-            renderTodos();
-            renderActive();
-            renderAll();
-            setListeners();
-        })
+        return sendReq("GET","api/todo")
 }
 
 function loadTodo(todoId) {

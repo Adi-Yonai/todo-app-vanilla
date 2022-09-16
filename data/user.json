@@ -1,15 +1,13 @@
 [
     {
         "_id": "u101",
-        "fullname": "Adi Best",
-        "usrname": "Adi1",
+        "username": "Adi1",
         "password": "1234",
         "isAdmin": false
     },
     {
         "_id": "u102",
-        "fullname": "Adi Worst",
-        "usrname": "Adi2",
+        "username": "Adi2",
         "password": "12345",
         "isAdmin": true
     }

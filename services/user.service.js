@@ -1,7 +1,6 @@
 
-const gUsers = require('../data/user.json')
 const Fs = require('fs')
-const { time } = require('console')
+const gUsers = require('../data/user.json')
 
 function getById(userId) {
     const user = gUsers.find(user => user._id === userId)
@@ -10,32 +9,28 @@ function getById(userId) {
 }
 
 function checkLogin(username, password) {
-    const user = gUsers.find(user => user.username === username && user.password === password)
+    var user = gUsers.find(user => user.username === username && user.password === password)
     if (!user) return Promise.reject('Invalid credentials')
     user = {...user}
     delete user.password
     return Promise.resolve(user)
 }
 
-function create( fullname, username, password) {
+function save( username, password) {
     const userToSave = {
         _id: _makeId(),
-        fullname,
         username,
         password,
         isAdmin: false
     }
-    _saveUsersToFile()
-    return Promise.resolve(userToSave)
+    gUsers.unshift(userToSave)
+    return _saveUsersToFile()
+        .then(() => {
+            const user = {...userToSave}
+            delete user.password
+            return user
+        })
 }
-
-function update(userToUpdate) {
-    const idx = gUsers.findIndex(user => user._id === userToUpdate._id)
-    gUsers[idx] = userToUpdate
-    _saveUsersToFile()
-    return Promise.resolve(userToUpdate)
-}
-
 
 function _saveUsersToFile() {
     return new Promise((resolve, reject) => {
@@ -59,6 +54,5 @@ function _makeId(length = 5) {
 module.exports = {
     checkLogin,
     getById,
-    create,
-    update
+    save
 }

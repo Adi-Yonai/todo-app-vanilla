@@ -29,8 +29,22 @@ app.post('/api/login', (req, res) => {
             res.send(user)
         })
         .catch(err => {
-            console.log(`${username} failed to login, reason ${err}`)
-            res.status(401).send(err)
+            console.log(`${username} failed to login, reason: ${err}`)
+            res.status(401).send('Invalid Login')
+        })
+})
+
+// Signup
+app.post('/api/signup', (req, res) => {
+    const { username, password} = req.body
+    userService.save(username, password)
+        .then( user => {
+            req.session.theUser = user
+            res.send(user)
+        })
+        .catch(err => {
+            console.log(`${username} failed to login, reason: ${err}`)
+            res.status(401).send('Invalid Login')
         })
 })
 
@@ -45,7 +59,7 @@ app.post('/api/logout', (req, res) => {
 app.get('/api/todo', (req, res) => {
     const { theUser} = req.session
     if (!theUser) return res.status(401).send('Please login')
-    todoService.query()
+    todoService.query(theUser)
     .then(todos => {
             res.send(todos)
     })
@@ -62,14 +76,22 @@ app.post('/api/todo/', (req, res) => {
     if (!theUser) return res.status(401).send('Please login')
     
     console.log('Backend saving your Todo')
-    const todo = req.body
-    todoService.create(todo)
+    const {title, txt, prio} = req.body
+    const user = {...theUser}
+    delete user.isAdmin
+    const todo = {
+        title,
+        txt,
+        prio,
+        owner: user
+    }
+    todoService.save(todo, theUser)
         .then((savedTodo) => {
             res.send(savedTodo)
         })
         .catch(err => {
             console.log('Backend had an eror:', err)
-            res.status(404).send(err)
+            res.status(404).send('Cannot create new todo')
         })
 })
 
@@ -77,9 +99,19 @@ app.post('/api/todo/', (req, res) => {
 app.put('/api/todo/:todoId', (req, res) => {
     const { theUser} = req.session
     if (!theUser) return res.status(401).send('Please login')
+
     console.log('Backend updating your Todo')
-    const todo = req.body
-    todoService.update(todo)
+    const {_id, title, txt, prio, isDone, createdAt} = req.body
+    const todo = {
+        _id,
+        title,
+        txt,
+        prio,
+        isDone,
+        createdAt,
+        owner: theUser
+    }
+    todoService.update(todo, theUser)
         .then((savedTodo) => {
             res.send(savedTodo)
         })
@@ -94,13 +126,13 @@ app.get('/api/todo/:todoId', (req, res) => {
     console.log('Backend getting your Todo:', req.params.todoId)
     const { theUser} = req.session
     if (!theUser) return res.status(401).send('Please login')
-    todoService.getById(req.params.todoId)
+    todoService.getById(req.params.todoId, theUser)
         .then(todo => {
             res.send(todo)
         })
         .catch(err => {
             console.log('Backend had an eror:', err)
-            res.status(404).send(err)
+            res.status(401).send(err)
         })
 })
 
@@ -108,11 +140,11 @@ app.get('/api/todo/:todoId', (req, res) => {
 app.delete('/api/todo/:todoId/', (req, res) => {
     const { theUser} = req.session
     if (!theUser) return res.status(401).send('Please login')
-    todoService.remove(req.params.todoId)
+    todoService.remove(req.params.todoId, theUser)
         .then(res.send({msg: 'Task removed successfully'}))
         .catch(err => {
             console.log('Backend had an eror:', err)
-            res.status(404).send(err)
+            res.status(401).send(err)
         })
 })
 

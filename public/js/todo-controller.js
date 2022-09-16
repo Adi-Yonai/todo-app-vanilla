@@ -3,19 +3,16 @@
 
 
 function onInit() {
-    sendReq("GET","api/todo")
-    .then( res => {
-        gTodos = JSON.parse(res);
-        renderTodos();
-        renderActive();
-        renderAll();
-        setListeners();
-    })
+    setListeners();
 }
 
 function setListeners() {
     const elDetBox = document.querySelector('.detail-box');
     elDetBox.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+    })
+    const elLoginBox = document.querySelector('.login-box');
+    elLoginBox.addEventListener("click", (ev) => {
         ev.stopPropagation();
     })
 }
@@ -89,15 +86,15 @@ function onOpenDetails(ev, todoId) {
 
 function openDetails(todo) {
     console.log(todo);
-    const elModal = document.querySelector('.modal');
-    const elDetBox = document.querySelector('.detail-box');
+    const elModal = document.querySelector('.detail-modal');
+    const elDetBox = document.querySelector('.details');
     const str =  `Title: ${todo.title}\n Description: ${todo.txt}\nPriority: ${todo.prio}\n${(todo.isDone)? 'Done': 'Active'}`;
     elDetBox.innerText = str;
     elModal.style.display = "unset";
 }
 
-function closeModal() {
-    const elModal = document.querySelector('.modal');
+function closeDet() {
+    const elModal = document.querySelector('.detail-modal');
     elModal.style.display = "none";
 }
 
@@ -108,3 +105,42 @@ function openAddBox(ev) {
     gIsAddBox = !gIsAddBox;
     elBox.classList.toggle("hidden");
 }
+
+function openLoginBox() {
+    const elModal = document.querySelector('.login-modal');
+    elModal.style.display = "unset";
+}
+
+function closeLogin() {
+    const elModal = document.querySelector('.login-modal');
+    elModal.style.display = "none";
+}
+
+function onLogin() {
+    const elUser = document.querySelector('input[name=username]');
+    const elpass = document.querySelector('input[name=password]');
+    const username = elUser.value;
+    const password = elpass.value;
+    if (!username || !password) return;
+    Promise.resolve(logUserIn(username, password))
+        .then(user => {
+        const loggedInUser = JSON.parse(user);
+        const elUserOpt = document.querySelector('.user-options');
+        const elBtn = document.querySelector('.login-box-button');
+        elUserOpt.innerText = loggedInUser.username;
+        elUserOpt.classList.remove('hidden');
+        elBtn.classList.add('hidden');
+        closeLogin();
+        elUser.value = '';
+        elpass.value = '';
+        loadTodos()
+        .then( res => {
+            gTodos = JSON.parse(res);
+            renderTodos();
+            renderActive();
+            renderAll();
+        })
+    })
+}
+
+function openUpdate()
