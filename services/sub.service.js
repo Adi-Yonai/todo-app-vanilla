@@ -23,31 +23,31 @@ function remove(todoId, loggedinUser) {
     return _saveTodosToFile()
 }
 
-function save({_id, title, txt, prio, isDone, owner, date, project, subTasks}, loggedinUser) {
-    const todoToSave = {
+function save({_id, title, txt, prio, isDone, date}, todoId, loggedinUser) {
+    const todoToSave = gTodos.find(todo => todo._id === todoId)
+    if (!todoToSave) return Promise.reject(' Todo not found')
+    if (!loggedinUser.isAdmin && todoToSave.owner._id !== loggedinUser._id) return Promise.reject('Not your todo')
+    
+    const subTaskToSave = {
         _id,
         title,
         txt,
         prio,
         isDone,
-        owner,
         date,
-        project,
-        subTasks
     }
-
+    
     if (_id) {
         // UPDATE
-        const idx = gTodos.findIndex(todo => todo._id === todoToSave._id)
-        if (idx===-1) return Promise.reject(' Todo not found')
-        if (!loggedinUser.isAdmin && gTodos[idx].owner._id !== loggedinUser._id) return Promise.reject('Not your todo')
-        gTodos[idx] = todoToSave
+        const idx = todoToSave.subTasks.findIndex(subTask => subTask._id === subTaskToSave._id)
+        if (idx===-1) return Promise.reject(' Sub-task not found')
+        todoToSave.subTasks[idx] = subTaskToSave
     } else {    
         // CREATE
-        todoToSave._id = _makeId()
-        todoToSave.isDone = false
-        todoToSave.subTasks = []
-        gTodos.unshift(todoToSave)
+        subTaskToSave._id = _makeId()
+        subTaskToSave.isDone = false
+        subTaskToSave.subTasks = []
+        todoToSave.subTasks.unshift(subTaskToSave)
     }
     return _saveTodosToFile().then(() => {return todoToSave})
 }

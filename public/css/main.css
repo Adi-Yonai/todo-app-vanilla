@@ -1,5 +1,6 @@
 body {
-    background-color: lightseagreen;
+    background-color: #1f1f1f;
+    color: white;
 }
 
 .done .check-box {
@@ -7,7 +8,7 @@ background-color: green;
 }
 
 .todo-filter {
-    background-color: aquamarine;
+    background-color: #999;
     padding: 5px;
 }
 
@@ -18,6 +19,7 @@ background-color: green;
 
 .check-box {
     padding: 5px;
+    margin-right: 5px;
     border-radius: 50%;
     background-color: red;
 }
@@ -67,4 +69,77 @@ header {
 
 .user-options {
     background-color: #fff;
+}
+
+.detail-header {
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    display: flex;
+    justify-content: space-between;
+    background-color: #1f1f1f;
+}
+.det-nav {
+    display: flex;
+}
+
+.nav-but {
+    border-style: none;
+    background-color: #1f1f1f;
+    color: hsl(0deg 0% 100% , 0.56);
+}
+
+.detail-body {
+    display: flex;
+    font-size: 14px;
+}
+
+.task-box {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.task-extra {
+    border: 1px;
+    border-style: solid;
+    flex-grow: 1;
+    background-color: #242424;
+}
+
+task-container {
+    border: 1px;
+    border-style: solid;
+    display: flex;
+    background-color: #1f1f1f;
+}
+
+.sub-box {
+    border: 1px;
+    border-style: solid;
+    margin-top: 16px;
+}
+
+.com-box {
+    border: 1px;
+    border-style: solid;
+    margin-top: 16px;
+}
+
+task-det {
+    border: 1px;
+    border-style: solid;
+    flex-grow: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    background-color: #1f1f1f;
+}
+
+.detail-box {
+    padding: 0px;
+    color: hsl(0deg 0% 100% / 87%);
+}
+
+task-item {
+    border-top: 1px;
 }

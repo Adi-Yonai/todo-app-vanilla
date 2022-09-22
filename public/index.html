@@ -24,8 +24,9 @@
             <option value="ACTIVE">Active</option>
         </select>
     </section>
-    <ul class="todo-list">
-    </ul>
+    <todo-list>
+    </todo-list>
+    <hr>
     <button onclick="openAddBox(event)">Add task</button>
     <section class="add-task hidden">
         <div class="add-box">
@@ -37,6 +38,7 @@
                 <option value="NORMAL">Normal</option>
                 <option value="LOW">Low</option>
             </select>
+            <input type="date" name="todoDate">
         </div>
         <button onclick="onAddTodo()">Add</button>
     </section>
@@ -47,9 +49,64 @@
     </section>
     <section class="detail-modal modal" onclick="closeDet()">
         <section class="detail-box box">
-            <div class="details"></div>
-            <button onclick="openUpdate()">Update</button>
-        </section>
+            <section class="detail-header">
+                <div class="project-name">PROJECT</div>
+                <div class="det-nav">
+                    <button class="nav-but">^</button>
+                    <button class="nav-but">v</button>
+                    <button class="nav-but">...</button>
+                    <button class="nav-but">X</button>
+                </div>
+            </section>
+                <section class="detail-body">
+                        <task-det>
+                            <task-container>
+                            </task-container>
+                            <div class="sub-box">Sub tasks 
+                                <sub-all></sub-all>/<sub-active></sub-active>
+                                <sub-active-list></sub-active-list>
+                                <button onclick="openAddSub(event)">Add task</button>
+                                <section class="add-sub hidden">
+                                    <div class="add-box">
+                                        <input type="text" name="subTitle" placeholder="Task name">
+                                        <input type="text" name="subTxt" placeholder="Description">
+                                        <select class="subPrio">
+                                            <option value="URGENT">Urgent</option>
+                                            <option value="HIGH">High</option>
+                                            <option value="NORMAL">Normal</option>
+                                            <option value="LOW">Low</option>
+                                        </select>
+                                        <input type="date" name="subDate">
+                                    </div>
+                                    <button onclick="onAddSub(event)">Add</button>
+                                    <sub-done></sub-done>
+                                </section>
+                            </div>
+                            <div class="com-box">comment</div>
+                        </task-det>
+                    <div class="task-extra">
+                        <h6>Project</h6>
+                        <task-project></task-project>
+                        <hr>
+                        <h6>Due date</h6>
+                        <task-date></task-date>
+                        <hr>
+                        <h6>Priority</h6>
+                        <select class="det-prio" onchange="updatePrio()">
+                            <option value="URGENT">Urgent</option>
+                            <option value="HIGH">High</option>
+                            <option value="NORMAL">Normal</option>
+                            <option value="LOW">Low</option>
+                        </select>
+                        <hr>
+                        <labels>
+                            <h6>Labels</h6>
+                            <p>+</p>
+                            <task-labels></task-labels>
+                        </labels>
+                    </div>
+                </section>
+            </section>
     </section>
     <section class="login-modal modal" onclick="closeLogin()">
         <section class="login-box box">
